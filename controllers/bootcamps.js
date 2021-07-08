@@ -8,7 +8,7 @@ exports.getBootcamps= async(req,res,next)=>{
 try {
     const bootcamps=await Bootcamp.find();
     res.status(200).json({
-        success:true,data:bootcamps
+        success:true,count:bootcamps.length,data:bootcamps
     })
 } catch (err) {
     res.status(400).json({success:false})
@@ -67,6 +67,15 @@ exports.updateBootcamp=async(req,res,next)=>{
 //@get  delete bootcamp
 //@get routes  DELETE   /api/v1/bootcamps/:id
 //@access     Private
-exports.deleteBootcamp=(req,res,next)=>{
- res.status(200).json({success:true,msg:`Delete Bootcamp of ${req.params.id}`})
+exports.deleteBootcamp=async(req,res,next)=>{
+ try {
+     const bootcamp = await Bootcamp.findByIdAndDelete(
+       req.params.id);
+     if (!bootcamp) {
+       return res.status(400).json({ success: false });
+     }
+     res.status(200).json({ success: true, data: {} });
+ } catch (err) {
+     return res.status(400).json({ success: false });
+ }
 }
